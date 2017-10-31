@@ -1,0 +1,6 @@
+name: MagicCreeperSkullPlusItem
+main: vip.creeper.mcserverplugins.magiccreeperheadplusitem.MagicCreeperHeadPlusItem
+author: July_ss
+version: 1.0.0
+commands:
+  omchpi:
