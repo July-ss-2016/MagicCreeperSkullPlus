@@ -25,6 +25,7 @@ public class MainListener {
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        //重新给予防止失效
         if (hattedPlayers.contains(player.getName())) {
             removeEffects(player);
             giveEffects(player);
@@ -35,6 +36,7 @@ public class MainListener {
     public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
 
+        //重新给予防止失效
         if (hattedPlayers.contains(player.getName())) {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 removeEffects(player);
@@ -49,6 +51,7 @@ public class MainListener {
         String playerName = player.getName();
 
         if (plugin.isMagicCreeperHeadPlusItem(player.getInventory().getHelmet())) {
+            //戴上
             if (!hattedPlayers.contains(playerName)) {
                 hattedPlayers.add(playerName);
                 giveEffects(player);
