@@ -26,84 +26,20 @@ import java.util.List;
  * Created by July_ on 2017/10/29.
  */
 public class MagicCreeperSkullPlusItem extends JavaPlugin implements Listener {
-    private List<String> hattedPlayers = new ArrayList<>();
+    private static MagicCreeperSkullPlusItem instance;
     private static List<String> lores = Arrays.asList( "§7- §f加成 §b> §f速度III", "§7- §f加成 §b> §f力量II", "§7- §f加成 §b> §f跳跃III", "§7- §f加成 §b> §f水下呼吸", "§7- §f加成 §b> §f八倍经验", "§7- §f技能 §b> §f忽隐忽现", "§7- §f技能 §b> §f死神绽放");
 
     public void onEnable() {
+        instance = this;
         Bukkit.getPluginManager().registerEvents(this, this);
-        getCommand("omchpi").setExecutor(this);
+        getCommand("omchpi").setExecutor(new AdminCommand());
     }
 
-    @EventHandler
-    public void onPlayerJoinEvent(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-
-        if (hattedPlayers.contains(player.getName())) {
-            removeEffects(player);
-            giveEffects(player);
-        }
+    public static MagicCreeperSkullPlusItem getInstance() {
+        return instance;
     }
 
-    @EventHandler
-    public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
-        Player player = event.getPlayer();
-
-        if (hattedPlayers.contains(player.getName())) {
-            Bukkit.getScheduler().runTask(this, () -> {
-                removeEffects(player);
-                giveEffects(player);
-            });
-        }
-    }
-
-    @EventHandler
-    public void onInventoryCloseEvent(InventoryCloseEvent event) {
-        Player player = (Player) event.getPlayer();
-        String playerName = player.getName();
-
-        if (isMagicCreeperHeadPlusItem(player.getInventory().getHelmet())) {
-            if (!hattedPlayers.contains(playerName)) {
-                hattedPlayers.add(playerName);
-                giveEffects(player);
-                sendMsgWithPrefix(player, "&c您已获得 &e速度II &c加成.");
-                sendMsgWithPrefix(player, "&c您已获得 &e力量II &c加成.");
-                sendMsgWithPrefix(player, "&c您已获得 &e跳跃提升II &c加成.");
-                sendMsgWithPrefix(player, "&c您已获得 &e水下呼吸 &c加成.");
-                sendMsgWithPrefix(player, "&c您已获得 &e八倍经验 &c加成.");
-                sendMsgWithPrefix(player, "&c您已获得 &e闪影 &c技能.");
-                sendMsgWithPrefix(player, "&c您已获得 &e死神绽放 &c技能.");
-            }
-
-            return;
-        }
-
-        //脱下
-        if (hattedPlayers.contains(playerName)) {
-            hattedPlayers.remove(playerName);
-            removeEffects(player);
-            sendMsgWithPrefix(player, "&c您脱下了 §e魔力Creeper头 Plus§c.");
-        }
-    }
-
-    private void removeEffects(Player player) {
-        player.removePotionEffect(PotionEffectType.SPEED);
-        player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
-        player.removePotionEffect(PotionEffectType.JUMP);
-        player.removePotionEffect(PotionEffectType.WATER_BREATHING);
-    }
-
-    private void giveEffects(Player player) {
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 1));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 2));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, Integer.MAX_VALUE, 2));
-    }
-
-    private void sendMsgWithPrefix(Player player, String msg) {
-        player.sendMessage("§a[MagicCreeperHeadPlus] §b" + ChatColor.translateAlternateColorCodes('&', msg));
-    }
-
-    public static ItemStack getItem() {
+    public ItemStack getItem() {
         ItemStack item = new ItemStack(Material.SKULL_ITEM);
         ItemMeta meta = item.getItemMeta();
 
@@ -115,7 +51,7 @@ public class MagicCreeperSkullPlusItem extends JavaPlugin implements Listener {
         return item;
     }
 
-    private boolean isMagicCreeperHeadPlusItem(ItemStack item) {
+    public boolean isMagicCreeperHeadPlusItem(ItemStack item) {
         if (item == null) {
             return false;
         }
@@ -136,26 +72,5 @@ public class MagicCreeperSkullPlusItem extends JavaPlugin implements Listener {
         }
 
         return lores.equals(comparedLores);
-    }
-
-    public boolean onCommand(CommandSender cs, Command cmd, String lable, String[] args) {
-        if (cs.hasPermission("MagicCreeperHeadPlusItem") && args.length == 2 && args[0].equalsIgnoreCase("give")) {
-            Player player = Bukkit.getPlayer(args[1]);
-
-            if (player == null || !player.isOnline()) {
-                cs.sendMessage("目标玩家未在线.");
-                return true;
-            }
-
-            PlayerInventory playerInv = player.getInventory();
-
-            if (playerInv.firstEmpty() == -1) {
-                cs.sendMessage("目标玩家背包空间不足.");
-                return true;
-            }
-
-            playerInv.addItem(getItem());
-        }
-        return false;
     }
 }

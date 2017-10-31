@@ -1,5 +1,5 @@
 name: MagicCreeperSkullPlusItem
-main: vip.creeper.mcserverplugins.magiccreeperheadplusitem.MagicCreeperHeadPlusItem
+main: vip.creeper.mcserverplugins.magiccreeperskullplusitem.MagicCreeperSkullPlusItem
 author: July_ss
 version: 1.0.0
 commands:
