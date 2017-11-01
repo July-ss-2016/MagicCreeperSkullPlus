@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class MagicCreeperSkullPlusItem extends JavaPlugin implements Listener {
     private static MagicCreeperSkullPlusItem instance;
-    private static List<String> lores = Arrays.asList( "§7- §f加成 §b> §f速度III", "§7- §f加成 §b> §f力量II", "§7- §f加成 §b> §f跳跃III", "§7- §f加成 §b> §f水下呼吸", "§7- §f加成 §b> §f八倍经验", "§7- §f技能 §b> §f忽隐忽现", "§7- §f技能 §b> §f死神绽放");
+    private static List<String> lores = Arrays.asList( "§7- §f加成 §b> §f速度III", "§7- §f加成 §b> §f力量II", "§7- §f加成 §b> §f跳跃III", "§7- §f加成 §b> §f水下呼吸", "§7- §f加成 §b> §f七倍经验", "§7- §f技能 §b> §f迷之闪现", "§7- §f技能 §b> §f死神绽放");
 
     public void onEnable() {
         instance = this;

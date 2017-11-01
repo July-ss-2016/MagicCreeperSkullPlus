@@ -1,24 +1,32 @@
 package vip.creeper.mcserverplugins.magiccreeperskullplusitem;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainListener {
     private MagicCreeperSkullPlusItem plugin;
     private List<String> hattedPlayers;
+    private HashMap<String, Long> cooldowns;
 
     public MainListener(MagicCreeperSkullPlusItem plugin) {
         this.plugin = plugin;
         this.hattedPlayers = new ArrayList<>();
+        this.cooldowns = new HashMap<>();
     }
     
     @EventHandler
@@ -72,6 +80,61 @@ public class MainListener {
             hattedPlayers.remove(playerName);
             removeEffects(player);
             Util.sendMsgWithPrefix(player, "&c您脱下了 §e魔力Creeper头 Plus§c.");
+        }
+    }
+
+    @EventHandler
+    public void onPlayerExpChangeEvent(PlayerExpChangeEvent event) {
+        if (hattedPlayers.contains(event.getPlayer().getName())) {
+            event.setAmount(event.getAmount() * 7);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent event) {
+        Player player = event.getPlayer();
+        String playerName = player.getName();
+
+        //50s
+        if (hattedPlayers.contains(playerName)) {
+            long cooldown = System.currentTimeMillis() - cooldowns.getOrDefault(playerName, 0L);
+
+            if (cooldown < 50000L) {
+                Util.sendMsgWithPrefix(player, "&c你还需 &e" + cooldown / 1000 + "秒 &c才能再次使用 &e死亡绽放 &c技能." );
+                return;
+            }
+
+            List<Entity> entities = player.getNearbyEntities(8, 128, 8);
+
+            //遍历实体，对玩家和怪物造成伤害
+            for (Entity entity : entities) {
+                if (entity instanceof Player) {
+                    player.damage(5D);
+                }
+
+                if (entity instanceof Monster) {
+                    player.damage(10D);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
+        Entity damager = event.getDamager();
+        Entity target = event.getEntity();
+
+        if (damager instanceof Player && target instanceof Player) {
+            Player playerDamager = (Player) damager;
+            Player playerTarget = (Player) target;
+
+            if (hattedPlayers.contains(playerDamager.getName())) {
+                //40%几率
+                if (Util.getRandomValue(1, 10) < 4) {
+                    playerTarget.hidePlayer(playerTarget);
+                    Util.sendMsgWithPrefix(playerTarget, "&d你触发了 &e迷之闪现 &d被动技能. ");
+                }
+            }
         }
     }
 

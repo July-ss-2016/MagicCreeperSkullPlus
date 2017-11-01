@@ -9,8 +9,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 import java.util.List;
 
-public class Util {
-    public static void sendMsgWithPrefix(Player player, String msg) {
+class Util {
+    static void sendMsgWithPrefix(Player player, String msg) {
         player.sendMessage("§a[MagicCreeperHeadPlus] §b" + ChatColor.translateAlternateColorCodes('&', msg));
+    }
+
+    // 1 2
+    static double getRandomValue(int min, int max) {
+        return Math.random() * (max - min + 1) + min;
     }
 }
