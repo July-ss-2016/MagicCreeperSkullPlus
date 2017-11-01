@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MagicCreeperSkullPlus.iml" filepath="$PROJECT_DIR$/MagicCreeperSkullPlus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MagicCreeperSkullPlusItem.iml" filepath="$PROJECT_DIR$/MagicCreeperSkullPlusItem.iml" />
     </modules>
   </component>
 </project>
